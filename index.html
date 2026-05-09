@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shanghai Food Journey | Yiran</title>
+    <style>
+        /* 基础重置与字体设置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Georgia', serif; /* 正文使用衬线体，更有杂志阅读感 */
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .sans-serif {
+            font-family: 'Helvetica Neue', Arial, sans-serif; /* 标题使用无衬线体产生对比 */
+        }
+
+        /* 左右跨页布局 (Magazine Spread) */
+        .spread-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100vw;
+        }
+
+        /* 左侧：全屏大图与巨型标题 */
+        .left-page {
+            flex: 1;
+            position: relative;
+            background-color: #333;
+            /* 这里替换为上海外滩或浦东的高清大图 */
+            background-image: url('https://images.unsplash.com/photo-1549693578-cbc73ba10d10?q=80&w=2000&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        /* 左侧图片加一层暗色遮罩，让白色文字更清晰 */
+        .left-page::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #e6a15c; /* 提取了参考图中 Berlin 上方的橙黄色 */
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.85;
+            letter-spacing: -2px;
+            margin-bottom: 15px;
+        }
+
+        .hero-bottom-text {
+            font-size: 1.5rem;
+            font-style: italic;
+            font-family: 'Georgia', serif;
+        }
+
+        /* 右侧：多栏文字与错落拼贴的图片 */
+        .right-page {
+            flex: 1;
+            padding: 60px 50px;
+            background-color: #fff;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        /* 杂志小标签 (类似 Berlin 图里的 SHOPPING / MORGENKAFFE) */
+        .editorial-tag {
+            display: inline-block;
+            background-color: #000;
+            color: #fff;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 4px 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* 双栏文字排版 */
+        .text-columns {
+            column-count: 2;
+            column-gap: 40px;
+            text-align: justify;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+        }
+
+        .text-columns h3 {
+            column-span: all; /* 让小标题跨越双栏 */
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            margin-top: 40px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .text-columns h3:first-child {
+            margin-top: 0;
+        }
+
+        .text-columns p {
+            margin-bottom: 15px;
+        }
+
+        /* 图片错落拼贴区 (模拟可颂和咖啡杯的重叠感) */
+        .collage-section {
+            position: relative;
+            margin: 50px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            column-span: all;
+        }
+
+        .collage-img-main {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border: 5px solid #fff; /* 白边模拟相片感 */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .collage-img-overlap {
+            width: 50%;
+            height: 200px;
+            object-fit: cover;
+            margin-top: -60px; /* 负边距制造重叠效果 */
+            margin-left: auto;
+            border: 5px solid #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 2;
+        }
+
+        .image-caption {
+            font-size: 0.75rem;
+            color: #888;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* 强调文字块 / AI Assessment */
+        .highlight-box {
+            background-color: #f4f4f4;
+            padding: 30px;
+            margin: 40px 0;
+            border-left: 4px solid #e6a15c;
+            column-span: all;
+        }
+
+        /* 响应式设计：在手机上变成上下排列，单栏文字 */
+        @media (max-width: 900px) {
+            .spread-container {
+                flex-direction: column;
+            }
+            .left-page, .right-page {
+                height: auto;
+                min-height: 50vh;
+            }
+            .hero-title {
+                font-size: 4rem;
+            }
+            .text-columns {
+                column-count: 1; /* 手机上恢复单栏 */
+            }
+            .right-page {
+                padding: 40px 25px;
+                overflow-y: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="spread-container">
+        
+        <!-- 左半页：视觉大图 -->
+        <div class="left-page">
+            <div class="hero-text sans-serif">
+                <span class="hero-subtitle">East Meets West</span>
+                <h1 class="hero-title">Shanghai</h1>
+                <span class="hero-bottom-text">for your taste buds</span>
+            </div>
+        </div>
+
+        <!-- 右半页：内容区域 -->
+        <div class="right-page">
+            
+            <div class="editorial-tag sans-serif">Introduction</div>
+            
+            <div class="text-columns">
+                <h3>The Haipai Spirit & Iconic Foods</h3>
+                <p>Shanghai is a city with the "Haipai" (East-meets-West) spirit etched into its very soul. As a semi-colonial treaty port a century ago, it was a site of intense collision and fusion between Eastern and Western civilizations. This history left behind the magnificent European architecture of the Bund and the plane-tree-shaded avenues of the Former French Concession, yet deep within these Western facades lie the traditional Jiangnan-style shikumen lanes.</p>
+                <p>Shanghai's culinary narrative is deeply rooted in the broader Jiangnan diet, which emphasizes seasonal freshness, delicate river produce, and sophisticated flavor profiles. The signature local technique is "red-braising" (hongshao), using soy sauce, sugar, and rice wine to create deep, savory-sweet glazes.</p>
+                <p>Street snacks are equally essential to the city's identity: Xiaolongbao (soup dumplings) are world-renowned for their thin skin and rich broth, while Shengjianbao (pan-fried buns) are prized for their crispy golden bottoms and tender tops.</p>
+                <p>Thanks to its century-long history of openness, Shanghai is not only a bastion of Jiangnan flavors but also a global peak for modern beverage culture. It boasts some of the highest-ranking bars in Asia and the world, and it officially holds the record for the highest density of coffee shops of any city on the planet.</p>
+            </div>
+
+            <!-- 图片重叠拼贴区 (模拟参考图里的咖啡馆/可颂) -->
+            <div class="collage-section">
+                <!-- 占位图1：酒吧或餐厅 -->
+                <div style="width: 100%;">
+                    <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1000&auto=format&fit=crop" class="collage-img-main" alt="Shanghai Bar">
+                    <div class="image-caption">World-class mixology at COA / Bar Leone</div>
+                </div>
+                <!-- 占位图2：重叠的小吃或特写 -->
+                <div style="width: 100%;">
+                    <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=800&auto=format&fit=crop" class="collage-img-overlap" alt="Soup Dumplings">
+                </div>
+            </div>
+
+            <div class="editorial-tag sans-serif">Weekend Itinerary</div>
+
+            <div class="text-columns">
+                <h3>Friday: Mixology & Benbang Cuisine</h3>
+                <p><strong>Evening Drinks:</strong> Starting the weekend at a world-class bar is the quintessential Shanghai experience. Whether you choose COA, famous for its elite agave spirits, or Bar Leone with its sophisticated Italian "high-low" charm, you will encounter top-tier mixology.</p>
+                <p><strong>Dinner:</strong> Whether it is the hidden gem Xiao Shihui or the legendary Old Jesse, these are the ultimate coordinates for authentic Shanghainese (Benbang) cuisine. The signature scallion-roasted fish head or red-braised pork belly are absolute must-orders.</p>
+                
+                <h3>Saturday: From Neighborhood Classics to Haipai Pastries</h3>
+                <p><strong>Breakfast:</strong> Start your day like a true local at a storied neighborhood spot. The crispy, fried pork chop paired with chewy rice cakes and a thick, sweet savory glaze (Pai Gu Nian Gao) is a classic carbohydrate-heavy combination.</p>
+                <p><strong>Lunch:</strong> The classic pairing of Shanghai Poached Chicken and a bowl of "Chai Pan" small wontons is the gold standard.</p>
+                <p><strong>Afternoon Coffee & Snack:</strong> Shanghai's specialty coffee scene is at its zenith. Grab a cup from Manner—a home-grown Shanghai miracle. Take a break in a traditional lane-side shop for seasonal pure crab-roe dumplings from Lai Lai or Jia Jia.</p>
+                <p><strong>Dinner:</strong> Local "topping noodles" (jiaotou mian) are the soul of the city's food scene. Fu He Mian Guan offers the most solid and authentic Shanghai grassroots dining experience.</p>
+                <p><strong>Dessert:</strong> A sweet ending must involve "Haipai Pastries"—the light fresh cream cake from Red Ruby, chestnut cake from Kaisiling, or the legendary butterfly pastries from the International Hotel.</p>
+            </div>
+
+            <div class="editorial-tag sans-serif">Special Event</div>
+            <div class="text-columns">
+                <p><strong>Street Egg Pancake & Wet Market Tour:</strong> To truly understand the city's food story, a visitor should grab a hot, soft egg pancake from a street stall and wander through a traditional wet market. The highlight comes after: once we've explored the market, we’ll head back to my home to cook with me and my family!</p>
+            </div>
+
+            <!-- AI 评估部分作为一个特别的强调框 -->
+            <div class="highlight-box">
+                <h3 class="sans-serif" style="margin-top:0; margin-bottom: 10px;">Part 2: AI Assessment</h3>
+                <p><em><strong>Prompt:</strong> "Act as a local destination marketer for Shanghai. Create a weekend food and drink itinerary highlighting local icons, Benbang cuisine, Haipai pastries, and the city's unique market culture."</em></p>
+                <p style="margin-top: 15px;"><strong>Critique:</strong> The AI performed well in establishing a theoretical framework and summarizing the "Jiangnan" culinary background. However, its initial recommendations leaned toward "safe," standardized tourist options. As a Shanghai local, I noticed it missed the city's most authentic, cutting-edge soul.</p>
+                <p>To give this itinerary true local credibility, I personally modified the plan to include "Pai Gu Nian Gao," "Fu He Mian Guan," and the experience of grabbing a street-side egg pancake before heading to a neighborhood wet market. My conclusion is that AI is an excellent tool for building a structure, but it requires the intervention of a local resident’s memory and historical understanding to give it a true soul.</p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
